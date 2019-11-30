@@ -24,14 +24,33 @@
 #define HTTP_STATUS_500 "HTTP/1.1 500 Internal Server Error"
 
 /*
+ * Structure cotaining one HTTP header (reqest/response) and pointer to next.
+ */
+struct httpheader {
+        char *header;
+        struct httpheader *next;
+};
+
+/*
  * Structure that contains http response elements.
  */
 struct httpresponse {
         int responselength;
         char *status;
         int contentlength;
+        struct httpheader *headers;
         char *body;
 };
+
+/*
+ * Helper function that adds header to httpresonse struct.
+ */
+void httpaddheader(struct httpresponse *res, char *header);
+
+/*
+ * Clean up after httpresponse.
+ */
+void freehttpresponse(struct httpresponse *res);
 
 /*
  * Binds socket for TCP communication to localhost with specific port.

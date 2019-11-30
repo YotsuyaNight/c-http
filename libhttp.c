@@ -23,6 +23,34 @@
 #include <errno.h>
 #include "libhttp.h"
 
+void httpaddheader(struct httpresponse *res, char *header)
+{
+        struct httpheader *headerstruct = malloc(sizeof(struct httpheader));
+        headerstruct->header = header;
+        headerstruct->next = NULL;
+        struct httpheader **it = &(res->headers);
+        while (*it != NULL) {
+                it = &((*it)->next);
+        }
+        *it = headerstruct;
+}
+
+/*
+ * Helper function that frees memory allocated by headers list in reverse.
+ */
+static void freehttpheader(struct httpheader *header)
+{
+        if (header != NULL) {
+                freehttpheader(header->next);
+                free(header);
+        }
+}
+
+void freehttpresponse(struct httpresponse *res)
+{
+        freehttpheader(res->headers);
+}
+
 int httpbindsocket(char *port)
 {
         struct addrinfo hints;
@@ -57,29 +85,40 @@ int httpbindsocket(char *port)
 
 char* httpresponsebuild(struct httpresponse *res)
 {
-        int statussize, headersize;
+        int statussize, headerssize;
 
-        statussize = strlen(res->status);
+        statussize = strlen(res->status) + 1;
 
         char clstr[32];
         sprintf(clstr, "%d", res->contentlength);
-        char clheader[17+32+1];
+        char *clheader = malloc(sizeof(char) * (17+32+1));
         strcpy(clheader, "Content-Length: ");
         strcat(clheader, clstr);
-        headersize = strlen(clheader);
+        httpaddheader(res, clheader);
 
-        res->responselength = 
-                statussize + 1 
-                + headersize + 1 
-                + 2  //CRLF
-                + res->contentlength;
+        headerssize = 0;
+        struct httpheader **header = &(res->headers);
+        while (*header != NULL) {
+                headerssize += strlen((*header)->header) + 1;
+                header = &((*header)->next);
+        }
+
+        res->responselength = statussize + headerssize + 2 + res->contentlength + 1;
         char *buffer = malloc(sizeof(char) * res->responselength);
 
         strcpy(buffer, res->status);
         strcat(buffer, "\n");
-        strcat(buffer, clheader);
-        strcat(buffer, "\n\r\n");
+
+        header = &(res->headers);
+        while (*header != NULL) {
+                strcat(buffer, (*header)->header);
+                strcat(buffer, "\n");
+                header = &((*header)->next);
+        }
+
+        strcat(buffer, "\r\n");
         strcat(buffer, res->body);
+        strcat(buffer, "\n");
 
         return buffer;
 }
