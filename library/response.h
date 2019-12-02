@@ -15,10 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdio.h>
 #include "statuses.h"
-
-#define printerr(msg) fprintf(stderr, "ERROR: %s\n", msg);
 
 /*
  * Structure cotaining one HTTP header (reqest/response) and pointer to next.
@@ -48,12 +45,6 @@ void httpaddheader(struct httpresponse *res, char *header);
  * Clean up after httpresponse.
  */
 void freehttpresponse(struct httpresponse *res);
-
-/*
- * Binds socket for TCP communication to localhost with specific port.
- * Returns -1 on error, or a file descriptor for new socket
- */
-int httpbindsocket(char *port);
 
 /*
  * Returns a buffer containing response. 

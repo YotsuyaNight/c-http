@@ -1,7 +1,8 @@
 project(c_http_lib)
 
 set(SOURCES
-    libhttp.c
+    tcp.c
+    response.c
 )
 
 add_library(chttp ${SOURCES})

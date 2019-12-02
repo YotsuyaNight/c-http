@@ -15,13 +15,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
-#include <sys/socket.h>
 #include <netdb.h>
 #include <errno.h>
-#include "libhttp.h"
+#include "response.h"
 
 void httpaddheader(struct httpresponse *res, char *header)
 {
@@ -38,49 +37,17 @@ void httpaddheader(struct httpresponse *res, char *header)
 /*
  * Helper function that frees memory allocated by headers list in reverse.
  */
-static void freehttpheader(struct httpheader *header)
+static void freehttpheaders(struct httpheader *header)
 {
         if (header != NULL) {
-                freehttpheader(header->next);
+                freehttpheaders(header->next);
                 free(header);
         }
 }
 
 void freehttpresponse(struct httpresponse *res)
 {
-        freehttpheader(res->headers);
-}
-
-int httpbindsocket(char *port)
-{
-        struct addrinfo hints;
-        struct addrinfo *result, *rp;
-        hints.ai_family = AF_INET; //IPv4
-        hints.ai_socktype = SOCK_STREAM;
-        hints.ai_flags = AI_PASSIVE; //Allow wildcards
-        hints.ai_protocol = IPPROTO_TCP;
-        hints.ai_canonname = NULL;
-        hints.ai_addr = NULL;
-        hints.ai_next = NULL;
-        int s = getaddrinfo("localhost", port, &hints, &result);
-        if (s != 0) {
-                printerr(gai_strerror(s));
-                return -1;
-        }
-        int sfd = -1;
-        for (rp = result; rp != NULL; rp = rp->ai_next) {
-                sfd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
-                if (sfd == -1)
-                        continue;
-                if (bind(sfd, rp->ai_addr, rp->ai_addrlen) == 0)
-                        break;                  
-                close(sfd);
-        }
-        if (rp == NULL) {
-                printerr("Could not bind\n");
-        }
-        freeaddrinfo(result);
-        return sfd;
+        freehttpheaders(res->headers);
 }
 
 char* httpresponsebuild(struct httpresponse *res)

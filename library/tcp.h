@@ -15,15 +15,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <netdb.h>
-#include "tcp.h"
+#define printerr(msg) fprintf(stderr, "ERROR: %s\n", msg);
 
-int main(int argc, char *argv[])
-{
-        int status = httplisten("8080");
-        return status;
-}
+/*
+ * This functions enters infinite loop, awaiting for incoming requests on
+ * specified port. Returns -1 on error.
+ */
+int httplisten(char *port);
