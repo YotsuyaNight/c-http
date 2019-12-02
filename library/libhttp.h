@@ -16,12 +16,9 @@
  */
 
 #include <stdio.h>
+#include "statuses.h"
 
 #define printerr(msg) fprintf(stderr, "ERROR: %s\n", msg);
-
-#define HTTP_STATUS_200 "HTTP/1.1 200 OK"
-#define HTTP_STATUS_404 "HTTP/1.1 404 Not Found"
-#define HTTP_STATUS_500 "HTTP/1.1 500 Internal Server Error"
 
 /*
  * Structure cotaining one HTTP header (reqest/response) and pointer to next.
