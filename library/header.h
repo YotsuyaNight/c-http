@@ -15,13 +15,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tcp.h"
-#include "header.h"
-#include <stddef.h>
-#include <stdio.h>
+#ifndef HEADER_H
+#define HEADER_H
 
-int main(int argc, char *argv[])
-{
-        int status = httplisten("8080");
-        return status;
-}
+/*
+ * Structure cotaining one HTTP header (reqest/response) and pointer to next.
+ */
+struct httpheader {
+        char *name;
+        char *value;
+        struct httpheader *next;
+};
+
+/*
+ * Appends new header to given header list.
+ */
+void httpaddheader(struct httpheader **headers, char *name, char *value);
+
+/*
+ * Frees memory allocated by headers list in reverse.
+ */
+void freehttpheaders(struct httpheader *header);
+
+#endif

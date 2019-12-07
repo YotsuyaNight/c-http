@@ -22,29 +22,6 @@
 #include <errno.h>
 #include "response.h"
 
-void httpaddheader(struct httpresponse *res, char *header)
-{
-        struct httpheader *headerstruct = malloc(sizeof(struct httpheader));
-        headerstruct->header = header;
-        headerstruct->next = NULL;
-        struct httpheader **it = &(res->headers);
-        while (*it != NULL) {
-                it = &((*it)->next);
-        }
-        *it = headerstruct;
-}
-
-/*
- * Helper function that frees memory allocated by headers list in reverse.
- */
-static void freehttpheaders(struct httpheader *header)
-{
-        if (header != NULL) {
-                freehttpheaders(header->next);
-                free(header);
-        }
-}
-
 void freehttpresponse(struct httpresponse *res)
 {
         freehttpheaders(res->headers);
@@ -56,17 +33,18 @@ char* httpresponsebuild(struct httpresponse *res)
 
         statussize = strlen(res->status) + 1;
 
-        char clstr[32];
-        sprintf(clstr, "%d", res->contentlength);
-        char *clheader = malloc(sizeof(char) * (17+32+1));
-        strcpy(clheader, "Content-Length: ");
-        strcat(clheader, clstr);
-        httpaddheader(res, clheader);
+        char contentlength[32] = {0};
+        sprintf(contentlength, "%d", res->contentlength);
+        httpaddheader(&res->headers, "Content-Length", "46");
 
         headerssize = 0;
         struct httpheader **header = &(res->headers);
+        if (*header == NULL)
+                printf("NO HEADERS!!!!\n");
         while (*header != NULL) {
-                headerssize += strlen((*header)->header) + 1;
+                headerssize += strlen((*header)->name)
+                                + strlen((*header)->value)
+                                + 3; // Newline and ': ' sequence
                 header = &((*header)->next);
         }
 
@@ -77,8 +55,12 @@ char* httpresponsebuild(struct httpresponse *res)
         strcat(buffer, "\n");
 
         header = &(res->headers);
+        if (*header == NULL)
+                printf("NO HEADERS!!!!\n");
         while (*header != NULL) {
-                strcat(buffer, (*header)->header);
+                strcat(buffer, (*header)->name);
+                strcat(buffer, ": ");
+                strcat(buffer, (*header)->value);
                 strcat(buffer, "\n");
                 header = &((*header)->next);
         }

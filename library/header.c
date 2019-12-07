@@ -15,13 +15,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tcp.h"
-#include "header.h"
 #include <stddef.h>
-#include <stdio.h>
+#include <stdlib.h>
+#include "header.h"
 
-int main(int argc, char *argv[])
+void httpaddheader(struct httpheader **headers, char *name, char *value)
 {
-        int status = httplisten("8080");
-        return status;
+        struct httpheader *newheader = malloc(sizeof(struct httpheader));
+        newheader->name = name;
+        newheader->value = value;
+        newheader->next = NULL;
+        struct httpheader **it = headers;
+        while (*it != NULL) {
+                it = &((*it)->next);
+        }
+        *it = newheader;
+}
+
+/*
+ * Helper function that frees memory allocated by headers list in reverse.
+ */
+void freehttpheaders(struct httpheader *header)
+{
+        if (header != NULL) {
+                freehttpheaders(header->next);
+                free(header);
+        }
 }

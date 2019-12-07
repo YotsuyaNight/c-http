@@ -15,13 +15,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tcp.h"
 #include "header.h"
-#include <stddef.h>
-#include <stdio.h>
 
-int main(int argc, char *argv[])
-{
-        int status = httplisten("8080");
-        return status;
-}
+struct httprequest {
+    char *method;
+    char *path;
+    char *protocol;
+    struct httpheader *headers;
+};
+
+struct httprequest httprequestparse(int sessionfd);

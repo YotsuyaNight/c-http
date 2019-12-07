@@ -24,6 +24,7 @@
 #include <errno.h>
 #include "tcp.h"
 #include "response.h"
+#include "request.h"
 
 static int httpbindsocket(char *port)
 {
@@ -59,34 +60,37 @@ static int httpbindsocket(char *port)
 
 int httplisten(char *port)
 {
-        char buff[500];
-
         int sfd = httpbindsocket(port);
         if (sfd == -1)
             return -1;
                 
         for (;;) {
-                memset(buff, 0, 500);
+                struct httpresponse res;
+                struct httprequest req;
+
                 printf("Awaiting request...\n");
 
                 if (listen(sfd, 50)  == -1)
                         return -1;
 
-                int session_fd = accept(sfd, 0, 0);
+                int sessionfd = accept(sfd, 0, 0);
                 printf("Received request!\n");
-                read(session_fd, buff, 500);
+                req = httprequestparse(sessionfd);
+                printf("METHOD: %s\n", req.method);
+                printf("PATH: %s\n", req.path);
+                printf("PROTOCOL: %s\n", req.protocol);
+                printf("\n");
 
-                struct httpresponse res;
                 res.headers = NULL;
                 res.status = HTTP_STATUS_200;
                 res.contentlength = 46;
                 res.body = "<html><body><p>Hello world!</p></body></html>";
-                httpaddheader(&res, "Content-Type: text/html");
+                httpaddheader(&res.headers, "Content-Type", "text/html");
                 char *response = httpresponsebuild(&res);
 
                 printf("Echoing following response:\n");
                 printf("%s\n", response);
-                write(session_fd, response, strlen(response));
+                write(sessionfd, response, strlen(response));
 
                 freehttpresponse(&res);
                 free(response);

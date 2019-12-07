@@ -16,14 +16,7 @@
  */
 
 #include "statuses.h"
-
-/*
- * Structure cotaining one HTTP header (reqest/response) and pointer to next.
- */
-struct httpheader {
-        char *header;
-        struct httpheader *next;
-};
+#include "header.h"
 
 /*
  * Structure that contains http response elements.
@@ -39,7 +32,7 @@ struct httpresponse {
 /*
  * Helper function that adds header to httpresonse struct.
  */
-void httpaddheader(struct httpresponse *res, char *header);
+void httpresponseaddheader(struct httpresponse *res, char *name, char *value);
 
 /*
  * Clean up after httpresponse.
