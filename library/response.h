@@ -15,6 +15,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef RESPONSE_H
+#define RESPONSE_H
+
 #include "statuses.h"
 #include "header.h"
 
@@ -43,3 +46,5 @@ void freehttpresponse(struct httpresponse *res);
  * Returns a buffer containing response. 
  */
 char* httpresponsebuild(struct httpresponse *res);
+
+#endif

@@ -15,6 +15,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef REQUEST_H
+#define REQUEST_H
+
 #include "header.h"
 
 struct httprequest {
@@ -25,3 +28,5 @@ struct httprequest {
 };
 
 struct httprequest httprequestparse(int sessionfd);
+
+#endif

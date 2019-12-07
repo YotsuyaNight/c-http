@@ -15,6 +15,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef TCP_H
+#define TCP_H
+
 #define printerr(msg) fprintf(stderr, "ERROR: %s\n", msg);
 
 /*
@@ -22,3 +25,5 @@
  * specified port. Returns -1 on error.
  */
 int httplisten(char *port);
+
+#endif
