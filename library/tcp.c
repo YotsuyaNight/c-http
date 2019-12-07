@@ -79,6 +79,12 @@ int httplisten(char *port)
                 printf("METHOD: %s\n", req.method);
                 printf("PATH: %s\n", req.path);
                 printf("PROTOCOL: %s\n", req.protocol);
+                printf("HEADERS:\n");
+                struct httpheader **header = &(req.headers);
+                while (*header != NULL) {
+                        printf("%s: %s\n", (*header)->name, (*header)->value);
+                        header = &((*header)->next);
+                }
                 printf("\n");
 
                 res.headers = NULL;
@@ -88,8 +94,8 @@ int httplisten(char *port)
                 httpaddheader(&res.headers, "Content-Type", "text/html");
                 char *response = httpresponsebuild(&res);
 
-                printf("Echoing following response:\n");
-                printf("%s\n", response);
+                // printf("Echoing following response:\n");
+                // printf("%s\n", response);
                 write(sessionfd, response, strlen(response));
 
                 freehttpresponse(&res);

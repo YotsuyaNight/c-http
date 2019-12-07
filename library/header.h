@@ -33,8 +33,14 @@ struct httpheader {
 void httpaddheader(struct httpheader **headers, char *name, char *value);
 
 /*
+ * Returns value of specified header, or NULL if that header doesn't exist.
+ */
+char* httpfindheader(struct httpheader *headers, char *name);
+
+/*
  * Frees memory allocated by headers list in reverse.
  */
 void freehttpheaders(struct httpheader *header);
+
 
 #endif

@@ -17,19 +17,33 @@
 
 #include <stddef.h>
 #include <stdlib.h>
+#include <string.h>
 #include "header.h"
 
 void httpaddheader(struct httpheader **headers, char *name, char *value)
 {
         struct httpheader *newheader = malloc(sizeof(struct httpheader));
-        newheader->name = name;
-        newheader->value = value;
+        newheader->name = malloc(sizeof(char) * strlen(name));
+        strcpy(newheader->name, name);
+        newheader->value = malloc(sizeof(char) * strlen(value));
+        strcpy(newheader->value, value);
         newheader->next = NULL;
         struct httpheader **it = headers;
         while (*it != NULL) {
                 it = &((*it)->next);
         }
         *it = newheader;
+}
+
+char* httpfindheader(struct httpheader *headers, char *name)
+{
+        struct httpheader *header = headers;
+        while (headers != NULL) {
+                if (strcmp(header->name, name) == 0)
+                        return header->value;
+                header = header->next;
+        }
+        return NULL;
 }
 
 /*

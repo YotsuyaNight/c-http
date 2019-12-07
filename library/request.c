@@ -45,17 +45,23 @@ static char* delimitedread(int fd, char delimiter)
 struct httprequest httprequestparse(int sessionfd)
 {
         struct httprequest req;
+        req.headers = NULL;
 
         req.method = delimitedread(sessionfd, ' ');
         req.path = delimitedread(sessionfd, ' ');
         req.protocol = delimitedread(sessionfd, '\n');
 
-        // char *header;
-        // for (;;) {
-        //         header = delimitedread(sessionfd, '\n');
-        //         printf("%s\n", header);
-        //         free(header);
-        // }
+        char *header;
+        for (;;) {
+                header = delimitedread(sessionfd, '\n');
+                if (strcmp(header, "\r") == 0)
+                        break;
+                // Read header name and value
+                char *name = strtok(header, ": ");
+                char *value = strtok(NULL, ": ");
+                httpaddheader(&req.headers, name, value);
+                free(header);
+        }
 
         return req;
 }
