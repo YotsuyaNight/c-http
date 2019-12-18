@@ -42,9 +42,9 @@ static char* delimitedread(int fd, char delimiter)
         return buffer;
 }
 
-struct httprequest httprequestparse(int sessionfd)
+httprequest httprequestparse(int sessionfd)
 {
-        struct httprequest req;
+        httprequest req;
         req.headers = NULL;
 
         req.method = delimitedread(sessionfd, ' ');

@@ -22,12 +22,12 @@
 #include <errno.h>
 #include "response.h"
 
-void freehttpresponse(struct httpresponse *res)
+void freehttpresponse(httpresponse *res)
 {
         freehttpheaders(res->headers);
 }
 
-char* httpresponsebuild(struct httpresponse *res)
+char* httpresponsebuild(httpresponse *res)
 {
         int statussize, headerssize;
 
@@ -38,7 +38,7 @@ char* httpresponsebuild(struct httpresponse *res)
         httpaddheader(&res->headers, "Content-Length", "46");
 
         headerssize = 0;
-        struct httpheader **header = &(res->headers);
+        httpheader **header = &(res->headers);
         if (*header == NULL)
                 printf("NO HEADERS!!!!\n");
         while (*header != NULL) {

@@ -20,13 +20,13 @@
 
 #include "header.h"
 
-struct httprequest {
+typedef struct {
     char *method;
     char *path;
     char *protocol;
-    struct httpheader *headers;
-};
+    httpheader *headers;
+} httprequest;
 
-struct httprequest httprequestparse(int sessionfd);
+httprequest httprequestparse(int sessionfd);
 
 #endif

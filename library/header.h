@@ -26,6 +26,7 @@ struct httpheader {
         char *value;
         struct httpheader *next;
 };
+typedef struct httpheader httpheader;
 
 /*
  * Appends new header to given header list.

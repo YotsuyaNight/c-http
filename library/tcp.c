@@ -65,8 +65,8 @@ int httplisten(char *port)
             return -1;
                 
         for (;;) {
-                struct httpresponse res;
-                struct httprequest req;
+                httpresponse res;
+                httprequest req;
 
                 printf("Awaiting request...\n");
 
@@ -80,7 +80,7 @@ int httplisten(char *port)
                 printf("PATH: %s\n", req.path);
                 printf("PROTOCOL: %s\n", req.protocol);
                 printf("HEADERS:\n");
-                struct httpheader **header = &(req.headers);
+                httpheader **header = &(req.headers);
                 while (*header != NULL) {
                         printf("%s: %s\n", (*header)->name, (*header)->value);
                         header = &((*header)->next);

@@ -24,27 +24,27 @@
 /*
  * Structure that contains http response elements.
  */
-struct httpresponse {
+typedef struct {
         int responselength;
         char *status;
         int contentlength;
-        struct httpheader *headers;
+        httpheader *headers;
         char *body;
-};
+} httpresponse;
 
 /*
  * Helper function that adds header to httpresonse struct.
  */
-void httpresponseaddheader(struct httpresponse *res, char *name, char *value);
+void httpresponseaddheader(httpresponse *res, char *name, char *value);
 
 /*
  * Clean up after httpresponse.
  */
-void freehttpresponse(struct httpresponse *res);
+void freehttpresponse(httpresponse *res);
 
 /*
  * Returns a buffer containing response. 
  */
-char* httpresponsebuild(struct httpresponse *res);
+char* httpresponsebuild(httpresponse *res);
 
 #endif
