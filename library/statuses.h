@@ -1,3 +1,6 @@
+#ifndef STATUSES_H
+#define STATUSES_H
+
 #define HTTP_STATUS_100 "HTTP/1.1 100 Continue"
 #define HTTP_STATUS_101 "HTTP/1.1 101 Switching Protocols"
 
@@ -42,3 +45,5 @@
 #define HTTP_STATUS_503 "HTTP/1.1 503 Service Unavailable"
 #define HTTP_STATUS_504 "HTTP/1.1 504 Gateway Time-out"
 #define HTTP_STATUS_505 "HTTP/1.1 505 HTTP Version not supported"
+
+#endif
