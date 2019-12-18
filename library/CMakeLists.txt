@@ -2,6 +2,7 @@ project(c_http_lib)
 
 set(SOURCES
     tcp.c
+    dispatcher.c
     header.c
     response.c
     request.c

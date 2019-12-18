@@ -25,6 +25,7 @@
 #include "tcp.h"
 #include "response.h"
 #include "request.h"
+#include "dispatcher.h"
 
 static int httpbindsocket(char *port)
 {
@@ -86,6 +87,14 @@ int httplisten(char *port)
                         header = &((*header)->next);
                 }
                 printf("\n");
+
+                // TODO: Delegate handling to handler
+                // For now, just execute all handlers
+                httproute **route = &dispatcher;
+                while (*route != NULL) {
+                        (*route)->handler(&req, &res);
+                        route = &((*route)->next);
+                }
 
                 res.headers = NULL;
                 res.status = HTTP_STATUS_200;

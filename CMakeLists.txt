@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.10.0)
 project(c_http)
 set(CMAKE_C_STANDARD 11)
 
+add_compile_options(-Wall -Wextra -pedantic)
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()

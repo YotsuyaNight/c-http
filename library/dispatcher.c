@@ -15,32 +15,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tcp.h"
-#include "header.h"
-#include "methods.h"
 #include "dispatcher.h"
-#include <string.h>
+#include <stdlib.h>
 
-void customhandler(httprequest *req, httpresponse *res)
-{
-        char *str = malloc(sizeof(char) * 1024);
-        strcat(str, req->path);
-        printf("Hello '%s' from custom handler!\n", str);
-        free(str);
-}
+// Initialize global dispatcher to NULL
+httproute *dispatcher = NULL;
 
-void chainedcustomhandler(httprequest *req, httpresponse *res)
+void httphandle(char *method, char *route,
+                void (*handler)(httprequest *req, httpresponse *res))
 {
-        char *str = malloc(sizeof(char) * 1024);
-        strcat(str, req->path);
-        printf("Hello '%s' from chained custom handler!\n", str);
-        free(str);
-}
-
-int main(int argc, char *argv[])
-{
-        httphandle(HTTP_GET, "/", &customhandler);
-        httphandle(HTTP_GET, "/", &chainedcustomhandler);
-        int status = httplisten("8080");
-        return status;
+        // Add new entry to dispatcher
+        httproute *newroute = malloc(sizeof(httproute));
+        newroute->route = route;
+        newroute->handler = handler;
+        newroute->next = NULL;
+        httproute **it = &dispatcher;
+        while (*it != NULL) {
+                it = &((*it)->next);
+        }
+        *it = newroute;
 }
