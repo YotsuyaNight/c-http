@@ -66,13 +66,13 @@ int httplisten(char *port)
             return -1;
                 
         for (;;) {
-                httpresponse res;
                 httprequest req;
-
-                printf("Awaiting request...\n");
+                httpresponse res;
 
                 if (listen(sfd, 50)  == -1)
                         return -1;
+
+                printf("Awaiting request...\n");
 
                 int sessionfd = accept(sfd, 0, 0);
                 printf("Received request!\n");
@@ -96,11 +96,7 @@ int httplisten(char *port)
                         route = &((*route)->next);
                 }
 
-                res.headers = NULL;
-                res.status = HTTP_STATUS_200;
-                res.contentlength = 46;
-                res.body = "<html><body><p>Hello world!</p></body></html>";
-                httpaddheader(&res.headers, "Content-Type", "text/html");
+                // Build response buffer
                 char *response = httpresponsebuild(&res);
 
                 // printf("Echoing following response:\n");

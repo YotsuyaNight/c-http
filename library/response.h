@@ -25,7 +25,6 @@
  * Structure that contains http response elements.
  */
 typedef struct {
-        int responselength;
         char *status;
         int contentlength;
         httpheader *headers;

@@ -29,18 +29,16 @@ void freehttpresponse(httpresponse *res)
 
 char* httpresponsebuild(httpresponse *res)
 {
-        int statussize, headerssize;
+        int statussize, headerssize, responselength;
 
         statussize = strlen(res->status) + 1;
 
         char contentlength[32] = {0};
         sprintf(contentlength, "%d", res->contentlength);
-        httpaddheader(&res->headers, "Content-Length", "46");
+        httpaddheader(&res->headers, "Content-Length", contentlength);
 
         headerssize = 0;
         httpheader **header = &(res->headers);
-        if (*header == NULL)
-                printf("NO HEADERS!!!!\n");
         while (*header != NULL) {
                 headerssize += strlen((*header)->name)
                                 + strlen((*header)->value)
@@ -48,15 +46,13 @@ char* httpresponsebuild(httpresponse *res)
                 header = &((*header)->next);
         }
 
-        res->responselength = statussize + headerssize + 2 + res->contentlength + 1;
-        char *buffer = malloc(sizeof(char) * res->responselength);
+        responselength = statussize + headerssize + 2 + res->contentlength + 1;
+        char *buffer = malloc(sizeof(char) * responselength);
 
         strcpy(buffer, res->status);
         strcat(buffer, "\n");
 
         header = &(res->headers);
-        if (*header == NULL)
-                printf("NO HEADERS!!!!\n");
         while (*header != NULL) {
                 strcat(buffer, (*header)->name);
                 strcat(buffer, ": ");

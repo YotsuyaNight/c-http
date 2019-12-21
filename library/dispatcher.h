@@ -27,7 +27,7 @@
  */
 struct httproute {
         char *route;
-        httpresponse (*handler)(httprequest *req, httpresponse *res);
+        void (*handler)(httprequest *req, httpresponse *res);
         struct httproute *next;
 };
 typedef struct httproute httproute;
