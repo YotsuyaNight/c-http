@@ -78,30 +78,15 @@ int httplisten(char *port)
                 if (listen(sfd, 50)  == -1)
                         return -1;
 
-                printf("Awaiting request...\n");
-
                 int sessionfd = accept(sfd, 0, 0);
-                printf("Received request!\n");
                 req = httprequestparse(sessionfd);
-                printf("METHOD: %s\n", req.method);
-                printf("PATH: %s\n", req.path);
-                printf("PROTOCOL: %s\n", req.protocol);
-                printf("HEADERS:\n");
-                httpheader **header = &(req.headers);
-                while (*header != NULL) {
-                        printf("%s: %s\n", (*header)->name, (*header)->value);
-                        header = &((*header)->next);
-                }
-                printf("\n");
+                printf("Received request: %s %s\n", req.method, req.path);
 
                 // Delegate request and response to dispatcher
                 httpdispatch(&req, &res);
 
-                // Build response buffer
+                // Build response buffer and write to socket
                 char *response = httpresponsebuild(&res);
-
-                // printf("Echoing following response:\n");
-                // printf("%s\n", response);
                 write(sessionfd, response, strlen(response));
 
                 freehttpresponse(&res);
