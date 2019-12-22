@@ -69,6 +69,12 @@ int httplisten(char *port)
                 httprequest req;
                 httpresponse res;
 
+                // Assign default values
+                res.headers = NULL;
+                res.status = HTTP_STATUS_200;
+                res.body = "";
+                res.contentlength = 0;
+
                 if (listen(sfd, 50)  == -1)
                         return -1;
 

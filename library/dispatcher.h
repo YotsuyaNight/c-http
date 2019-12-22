@@ -57,4 +57,11 @@ void httpdispatch(httprequest *req, httpresponse *res);
 void httphandle(httpmethod method, char *route,
                 void (*handler)(httprequest *req, httpresponse *res));
 
+/*
+ * Register handler for 404 error.
+ */
+void httphandle404(void (*handler)(httprequest *req, httpresponse *res));
+
+extern void (*http404errorhandler)(httprequest *req, httpresponse *res);
+
 #endif

@@ -19,30 +19,52 @@
 #include "header.h"
 #include "methods.h"
 #include "dispatcher.h"
+#include "unused.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 
-void gethandler(httprequest *req, httpresponse *res)
+void roothandler(httprequest *req, httpresponse *res)
 {
-        res->headers = NULL;
-        res->status = HTTP_STATUS_200;
-        res->contentlength = 52;
-        res->body = "<html><body><h1>GET Hello world!</h1></body></html>";
+        UNUSED(req);
+        UNUSED(res);
+        res->contentlength = 54;
+        res->body = "<html><body><h1>This is root page!</h1></body></html>";
+}
+
+void helloworldhandler(httprequest *req, httpresponse *res)
+{
+        UNUSED(req);
+        UNUSED(res);
+        res->contentlength = 48;
+        res->body = "<html><body><h1>Hello world!</h1></body></html>";
 }
 
 void posthandler(httprequest *req, httpresponse *res)
 {
-        res->headers = NULL;
-        res->status = HTTP_STATUS_200;
+        UNUSED(req);
+        UNUSED(res);
         res->contentlength = 53;
         res->body = "<html><body><h1>POST Hello world!</h1></body></html>";
 }
 
+void handler404(httprequest *req, httpresponse *res)
+{
+        UNUSED(req);
+        UNUSED(res);
+        res->contentlength = 54;
+        res->body = "<html><body><h1>404 Page Not Found</h1></body></html>";
+}
+
 int main(int argc, char *argv[])
 {
-        httphandle(HTTP_GET, "/", &gethandler);
+        UNUSED(argc);
+        UNUSED(argv);
+
+        httphandle(HTTP_GET, "/", &roothandler);
+        httphandle(HTTP_GET, "/helloworld", &helloworldhandler);
         httphandle(HTTP_POST, "/", &posthandler);
+        httphandle404(&handler404);
 
         int status = httplisten("8080");
         return status;

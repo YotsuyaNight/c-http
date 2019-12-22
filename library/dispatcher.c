@@ -19,6 +19,7 @@
 #include "methods.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 // Initialize global dispatcher to NULL
 httpdispatcher dispatcher = {
@@ -61,9 +62,13 @@ void httpdispatch(httprequest *req, httpresponse *res)
         httpmethod methodnum = httpstrtomethod(req->method);
         httproute **branch = dispatcherbranch(methodnum);
         while (*branch != NULL) {
-                (*branch)->handler(req, res);
+                if (strcmp((*branch)->route, req->path) == 0) {
+                        (*branch)->handler(req, res);
+                        return;
+                } 
                 branch = &((*branch)->next);
         }
+        http404errorhandler(req, res);
 }
 
 void httphandle(httpmethod method, char *route,
@@ -79,4 +84,11 @@ void httphandle(httpmethod method, char *route,
                 it = &((*it)->next);
         }
         *it = newroute;
+}
+
+void (*http404errorhandler)(httprequest *req, httpresponse *res) = NULL;
+
+void httphandle404(void (*handler)(httprequest *req, httpresponse *res))
+{
+        http404errorhandler = handler;
 }
