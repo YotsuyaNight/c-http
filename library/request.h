@@ -21,10 +21,10 @@
 #include "header.h"
 
 typedef struct {
-    char *method;
-    char *path;
-    char *protocol;
-    httpheader *headers;
+        char *method;
+        char *path;
+        char *protocol;
+        httpheader *headers;
 } httprequest;
 
 httprequest httprequestparse(int sessionfd);
