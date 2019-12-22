@@ -21,30 +21,6 @@
 #include "request.h"
 #include "response.h"
 #include "methods.h"
-#include <stddef.h>
-
-/*
- * List containing handlers for different routes.
- */
-struct httproute {
-        char *route;
-        void (*handler)(httprequest *req, httpresponse *res);
-        struct httproute *next;
-};
-typedef struct httproute httproute;
-
-/*
- * Important global variable that holds all routes.
- */
-typedef struct httpdispatcher {
-        httproute *get;
-        httproute *post;
-        httproute *put;
-        httproute *delete;
-        httproute *options;
-} httpdispatcher;
-
-extern httpdispatcher dispatcher;
 
 /*
  * Dispatch request to proper handler.
@@ -61,7 +37,5 @@ void httphandle(httpmethod method, char *route,
  * Register handler for 404 error.
  */
 void httphandle404(void (*handler)(httprequest *req, httpresponse *res));
-
-extern void (*http404errorhandler)(httprequest *req, httpresponse *res);
 
 #endif

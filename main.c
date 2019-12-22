@@ -16,13 +16,9 @@
  */
 
 #include "tcp.h"
-#include "header.h"
 #include "methods.h"
 #include "dispatcher.h"
 #include "unused.h"
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
 
 void roothandler(httprequest *req, httpresponse *res)
 {
@@ -52,6 +48,7 @@ void handler404(httprequest *req, httpresponse *res)
 {
         UNUSED(req);
         UNUSED(res);
+        res->status = HTTP_STATUS_404;
         res->contentlength = 54;
         res->body = "<html><body><h1>404 Page Not Found</h1></body></html>";
 }

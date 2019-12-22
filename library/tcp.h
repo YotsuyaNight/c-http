@@ -18,8 +18,6 @@
 #ifndef TCP_H
 #define TCP_H
 
-#define printerr(msg) fprintf(stderr, "ERROR: %s\n", msg);
-
 /*
  * This functions enters infinite loop, awaiting for incoming requests on
  * specified port. Returns -1 on error.

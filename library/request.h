@@ -27,6 +27,9 @@ typedef struct {
         httpheader *headers;
 } httprequest;
 
+/*
+ * Read stream from socket into httprequest struct.
+ */
 httprequest httprequestparse(int sessionfd);
 
 #endif

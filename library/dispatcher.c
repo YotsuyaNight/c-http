@@ -21,20 +21,37 @@
 #include <stdio.h>
 #include <string.h>
 
-// Initialize global dispatcher to NULL
-httpdispatcher dispatcher = {
-        .get     = NULL,
-        .post    = NULL,
-        .put     = NULL,
-        .delete  = NULL,
-        .options = NULL
+/*
+ * Routes list entry.
+ */
+struct httproute {
+        char *route;
+        void (*handler)(httprequest *req, httpresponse *res);
+        struct httproute *next;
 };
 
 /*
- * Helper function to choose correct branch for given method
+ * Struct containing routes litsts for every method.
  */
-static httproute** dispatcherbranch(httpmethod method) {
-        httproute **branch;
+static struct httpdispatcher {
+        struct httproute *get;
+        struct httproute *post;
+        struct httproute *put;
+        struct httproute *delete;
+        struct httproute *options;
+        struct httproute *unknown;
+} dispatcher;
+
+/*
+ * Handler for 404 error.
+ */
+static void (*http404errorhandler)(httprequest *req, httpresponse *res) = NULL;
+
+/*
+ * Helper function to choose correct branch for given method.
+ */
+static struct httproute** dispatcherbranch(httpmethod method) {
+        struct httproute **branch;
         switch (method) {
                 case HTTP_GET:
                         branch = &(dispatcher.get);
@@ -52,7 +69,7 @@ static httproute** dispatcherbranch(httpmethod method) {
                         branch = &(dispatcher.options);
                         break;
                 default:
-                        branch = NULL;
+                        branch = &(dispatcher.unknown);
         }
         return branch;
 }
@@ -60,7 +77,7 @@ static httproute** dispatcherbranch(httpmethod method) {
 void httpdispatch(httprequest *req, httpresponse *res)
 {
         httpmethod methodnum = httpstrtomethod(req->method);
-        httproute **branch = dispatcherbranch(methodnum);
+        struct httproute **branch = dispatcherbranch(methodnum);
         while (*branch != NULL) {
                 if (strcmp((*branch)->route, req->path) == 0) {
                         (*branch)->handler(req, res);
@@ -75,18 +92,16 @@ void httphandle(httpmethod method, char *route,
                 void (*handler)(httprequest *req, httpresponse *res))
 {
         // Add new entry to dispatcher
-        httproute *newroute = malloc(sizeof(httproute));
+        struct httproute *newroute = malloc(sizeof(struct httproute));
         newroute->route = route;
         newroute->handler = handler;
         newroute->next = NULL;
-        httproute **it = dispatcherbranch(method);
+        struct httproute **it = dispatcherbranch(method);
         while (*it != NULL) {
                 it = &((*it)->next);
         }
         *it = newroute;
 }
-
-void (*http404errorhandler)(httprequest *req, httpresponse *res) = NULL;
 
 void httphandle404(void (*handler)(httprequest *req, httpresponse *res))
 {

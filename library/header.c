@@ -20,24 +20,24 @@
 #include <string.h>
 #include "header.h"
 
-void httpaddheader(struct httpheader **headers, char *name, char *value)
+void httpaddheader(httpheader **headers, char *name, char *value)
 {
-        struct httpheader *newheader = malloc(sizeof(struct httpheader));
+        httpheader *newheader = malloc(sizeof(httpheader));
         newheader->name = malloc(sizeof(char) * strlen(name));
         strcpy(newheader->name, name);
         newheader->value = malloc(sizeof(char) * strlen(value));
         strcpy(newheader->value, value);
         newheader->next = NULL;
-        struct httpheader **it = headers;
+        httpheader **it = headers;
         while (*it != NULL) {
                 it = &((*it)->next);
         }
         *it = newheader;
 }
 
-char* httpfindheader(struct httpheader *headers, char *name)
+char* httpfindheader(httpheader *headers, char *name)
 {
-        struct httpheader *header = headers;
+        httpheader *header = headers;
         while (headers != NULL) {
                 if (strcmp(header->name, name) == 0)
                         return header->value;
@@ -49,10 +49,12 @@ char* httpfindheader(struct httpheader *headers, char *name)
 /*
  * Helper function that frees memory allocated by headers list in reverse.
  */
-void freehttpheaders(struct httpheader *header)
+void freehttpheaders(httpheader *header)
 {
         if (header != NULL) {
                 freehttpheaders(header->next);
+                free(header->name);
+                free(header->value);
                 free(header);
         }
 }

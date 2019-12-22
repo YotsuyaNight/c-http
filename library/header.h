@@ -31,17 +31,17 @@ typedef struct httpheader httpheader;
 /*
  * Appends new header to given header list.
  */
-void httpaddheader(struct httpheader **headers, char *name, char *value);
+void httpaddheader(httpheader **headers, char *name, char *value);
 
 /*
  * Returns value of specified header, or NULL if that header doesn't exist.
  */
-char* httpfindheader(struct httpheader *headers, char *name);
+char* httpfindheader(httpheader *headers, char *name);
 
 /*
  * Frees memory allocated by headers list in reverse.
  */
-void freehttpheaders(struct httpheader *header);
+void freehttpheaders(httpheader *header);
 
 
 #endif

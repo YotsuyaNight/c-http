@@ -27,6 +27,11 @@
 #include "request.h"
 #include "dispatcher.h"
 
+#define printerr(msg) fprintf(stderr, "ERROR: %s\n", msg);
+
+/*
+ * Binds to TCP socket on specified socket.
+ */
 static int httpbindsocket(char *port)
 {
         struct addrinfo hints;
@@ -38,11 +43,13 @@ static int httpbindsocket(char *port)
         hints.ai_canonname = NULL;
         hints.ai_addr = NULL;
         hints.ai_next = NULL;
+
         int s = getaddrinfo("localhost", port, &hints, &result);
         if (s != 0) {
                 printerr(gai_strerror(s));
                 return -1;
         }
+
         int sfd = -1;
         for (rp = result; rp != NULL; rp = rp->ai_next) {
                 sfd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
@@ -52,9 +59,10 @@ static int httpbindsocket(char *port)
                         break;                  
                 close(sfd);
         }
-        if (rp == NULL) {
+        
+        if (rp == NULL)
                 printerr("Could not bind\n");
-        }
+
         freeaddrinfo(result);
         return sfd;
 }
