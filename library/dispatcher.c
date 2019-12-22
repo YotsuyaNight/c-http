@@ -16,12 +16,57 @@
  */
 
 #include "dispatcher.h"
+#include "methods.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 // Initialize global dispatcher to NULL
-httproute *dispatcher = NULL;
+httpdispatcher dispatcher = {
+        .get     = NULL,
+        .post    = NULL,
+        .put     = NULL,
+        .delete  = NULL,
+        .options = NULL
+};
 
-void httphandle(char *method, char *route,
+/*
+ * Helper function to choose correct branch for given method
+ */
+static httproute** dispatcherbranch(httpmethod method) {
+        httproute **branch;
+        switch (method) {
+                case HTTP_GET:
+                        branch = &(dispatcher.get);
+                        break;
+                case HTTP_POST:
+                        branch = &(dispatcher.post);
+                        break;
+                case HTTP_PUT:
+                        branch = &(dispatcher.put);
+                        break;
+                case HTTP_DELETE:
+                        branch = &(dispatcher.delete);
+                        break;
+                case HTTP_OPTIONS:
+                        branch = &(dispatcher.options);
+                        break;
+                default:
+                        branch = NULL;
+        }
+        return branch;
+}
+
+void httpdispatch(httprequest *req, httpresponse *res)
+{
+        httpmethod methodnum = httpstrtomethod(req->method);
+        httproute **branch = dispatcherbranch(methodnum);
+        while (*branch != NULL) {
+                (*branch)->handler(req, res);
+                branch = &((*branch)->next);
+        }
+}
+
+void httphandle(httpmethod method, char *route,
                 void (*handler)(httprequest *req, httpresponse *res))
 {
         // Add new entry to dispatcher
@@ -29,7 +74,7 @@ void httphandle(char *method, char *route,
         newroute->route = route;
         newroute->handler = handler;
         newroute->next = NULL;
-        httproute **it = &dispatcher;
+        httproute **it = dispatcherbranch(method);
         while (*it != NULL) {
                 it = &((*it)->next);
         }

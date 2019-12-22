@@ -15,21 +15,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef METHODS_H
-#define METHODS_H
+#include "methods.h" 
+#include <string.h>
 
-typedef enum httpmethod {
-        HTTP_GET,
-        HTTP_POST,
-        HTTP_PUT,
-        HTTP_DELETE,
-        HTTP_OPTIONS,
-        HTTP_UNKNOWN
-} httpmethod;
-
-/*
- * Helper function to obtain httpmethod enum value from string
- */
-httpmethod httpstrtomethod(char *str);
-
-#endif
+httpmethod httpstrtomethod(char *str)
+{
+        httpmethod method =  HTTP_UNKNOWN;
+        if (strcmp(str, "GET") == 0)
+                method =  HTTP_GET;
+        else if (strcmp(str, "POST") == 0)
+                method =  HTTP_POST;
+        else if (strcmp(str, "PUT") == 0)
+                method =  HTTP_PUT;
+        else if (strcmp(str, "DELETE") == 0)
+                method =  HTTP_DELETE;
+        else if (strcmp(str, "OPTIONS") == 0)
+                method =  HTTP_OPTIONS;
+        return method;
+}

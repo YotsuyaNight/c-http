@@ -88,13 +88,8 @@ int httplisten(char *port)
                 }
                 printf("\n");
 
-                // TODO: Delegate handling to handler
-                // For now, just execute all handlers
-                httproute **route = &dispatcher;
-                while (*route != NULL) {
-                        (*route)->handler(&req, &res);
-                        route = &((*route)->next);
-                }
+                // Delegate request and response to dispatcher
+                httpdispatch(&req, &res);
 
                 // Build response buffer
                 char *response = httpresponsebuild(&res);

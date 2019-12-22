@@ -23,17 +23,27 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void helloworld(httprequest *req, httpresponse *res)
+void gethandler(httprequest *req, httpresponse *res)
 {
         res->headers = NULL;
         res->status = HTTP_STATUS_200;
-        res->contentlength = 48;
-        res->body = "<html><body><h1>Hello world!</h1></body></html>";
+        res->contentlength = 52;
+        res->body = "<html><body><h1>GET Hello world!</h1></body></html>";
+}
+
+void posthandler(httprequest *req, httpresponse *res)
+{
+        res->headers = NULL;
+        res->status = HTTP_STATUS_200;
+        res->contentlength = 53;
+        res->body = "<html><body><h1>POST Hello world!</h1></body></html>";
 }
 
 int main(int argc, char *argv[])
 {
-        httphandle(HTTP_GET, "/", &helloworld);
-        int status = httplisten("8081");
+        httphandle(HTTP_GET, "/", &gethandler);
+        httphandle(HTTP_POST, "/", &posthandler);
+
+        int status = httplisten("8080");
         return status;
 }

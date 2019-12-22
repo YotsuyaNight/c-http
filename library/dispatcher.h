@@ -20,6 +20,7 @@
 
 #include "request.h"
 #include "response.h"
+#include "methods.h"
 #include <stddef.h>
 
 /*
@@ -33,14 +34,27 @@ struct httproute {
 typedef struct httproute httproute;
 
 /*
- * Important global variable that holds all the routes.
+ * Important global variable that holds all routes.
  */
-extern httproute *dispatcher;
+typedef struct httpdispatcher {
+        httproute *get;
+        httproute *post;
+        httproute *put;
+        httproute *delete;
+        httproute *options;
+} httpdispatcher;
+
+extern httpdispatcher dispatcher;
+
+/*
+ * Dispatch request to proper handler.
+ */
+void httpdispatch(httprequest *req, httpresponse *res);
 
 /*
  * Register handler function for given route
  */
-void httphandle(char *method, char *route,
+void httphandle(httpmethod method, char *route,
                 void (*handler)(httprequest *req, httpresponse *res));
 
 #endif
