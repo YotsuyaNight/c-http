@@ -22,7 +22,7 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <errno.h>
-#include "tcp.h"
+#include "server.h"
 #include "response.h"
 #include "request.h"
 #include "dispatcher.h"

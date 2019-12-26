@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TCP_H
-#define TCP_H
+#ifndef SERVER_H
+#define SERVER_H
 
 /*
  * This functions enters infinite loop, awaiting for incoming requests on

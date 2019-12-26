@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tcp.h"
+#include "server.h"
 #include "methods.h"
 #include "dispatcher.h"
 #include "unused.h"

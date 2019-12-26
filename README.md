@@ -2,11 +2,21 @@
 This project was created out of boredom, basically as a C exercise. It depends only on C Standard and POSIX libraries. Feel free to use this in production if you want, however I am not responsible for any damage it may cause.
 
 ### How To Use
-First, you need to compile the library, then link your program against it. Alternatively, you can just use `main.cpp` embedded into this project.
+This repository consists of two CMake projects:
+* `chttp` shared library located in `lib`, which may be built and installed independently. Default install path is `${PROJECT_SOURCE_DIR}/bin`, but you may change it by passing `-DCMAKE_INSTALL_PREFIX=<your custom path>` argument to cmake.
+* `cwebserver`, one-file program located in root directory, which makes use of `chttp` library. Building this program automatically builds and links the library, too.
+
+To build the program or the library, follow these steps:
+```bash
+$ mkdir build; cd build
+$ cmake ..
+$ make
+```
+This will create out-of-source build, which you can easily clean by deleting `build` directory.
 
 ### Minimal working example
 ```c
-#include "tcp.h"
+#include "server.h"
 #include "methods.h"
 #include "dispatcher.h"
 
